@@ -44,7 +44,7 @@ Note: If the file is missing, the script will generate a small synthetic dataset
 Run the script:
 
 ```
-python analysis.py
+python main.py
 ```
 
 The script will output:
