@@ -4,56 +4,77 @@ import numpy as np
 
 def perform_eda(df):
     """
-    Prints detailed statistical summaries to the terminal.
-    Use these outputs for the 'Data Analysis' section of your paper.
+    Prints robust statistical summaries for the ACM paper.
+    Fixes NaNs, interprets intensity correctly, and adds grouping analysis.
     """
     print("\n" + "#"*60)
-    print("   EXPLORATORY DATA ANALYSIS (EDA) & STATISTICS   ")
+    print("   EXPLORATORY DATA ANALYSIS (EDA) - PAPER METRICS   ")
     print("#"*60)
 
-    # 1. Data Structure
-    print(f"\n[1] Dataset Overview")
+    # 1. Dataset Integrity Check
+    print(f"\n[1] Data Integrity")
     print(f"    - Total Records: {len(df)}")
-    print(f"    - Unique Countries: {df['Country'].nunique()}")
-    print(f"    - Years Covered: {df['Year'].min()} to {df['Year'].max()}")
-    print(f"    - Missing Values (Top 5 Columns):\n{df.isnull().sum().sort_values(ascending=False).head(5)}")
-
-    # 2. Research Question 1: Decoupling (GDP vs CO2)
-    print(f"\n[2] RQ1: Economic Growth vs. Environmental Impact")
+    print(f"    - Countries: {df['Country'].nunique()}")
+    print(f"    - Years: {df['Year'].min()} to {df['Year'].max()}")
+    
+    # 2. RQ1: The Decoupling Analysis (Growth vs Emissions)
+    print(f"\n[2] RQ1: Economic Decoupling")
     if 'GDP_Capita' in df.columns and 'CO2_Total_kt' in df.columns:
         # Correlation
         corr_gdp_co2 = df[['GDP_Capita', 'CO2_Total_kt']].corr().iloc[0,1]
-        print(f"    - Correlation (GDP per Capita vs. CO2 Total): {corr_gdp_co2:.4f}")
-        
-        # Intensity Change
+        print(f"    - Correlation (Wealth vs. Emissions): {corr_gdp_co2:.4f}")
+        print("      -> Interpretation: Weak correlation implies broad variance (some decoupling).")
+
+        # Energy Intensity Logic (Lower is Better)
         if 'Energy_Intensity' in df.columns:
-            avg_int_2000 = df[df['Year'] == 2000]['Energy_Intensity'].mean()
+            # Filter for valid years
+            avg_2000 = df[df['Year'] == 2000]['Energy_Intensity'].mean()
             avg_2020 = df[df['Year'] == 2020]['Energy_Intensity'].mean()
-            print(f"    - Global Avg Energy Intensity (2000): {avg_int_2000:.2f} MJ/$")
+            pct_change = ((avg_2020 - avg_2000) / avg_2000) * 100
+            
+            print(f"    - Global Avg Energy Intensity (2000): {avg_2000:.2f} MJ/$")
             print(f"    - Global Avg Energy Intensity (2020): {avg_2020:.2f} MJ/$")
-            print(f"    - Improvement: {((avg_2020 - avg_int_2000)/avg_int_2000)*100:.1f}%")
+            print(f"    - Change: {pct_change:+.2f}%")
+            
+            if pct_change > 0:
+                print("      -> CRITICAL FINDING: Global efficiency has WORSENED (More energy needed per $).")
+            else:
+                print("      -> POSITIVE FINDING: Global efficiency has IMPROVED (Less energy needed per $).")
 
-    # 3. Research Question 2: Aid Effectiveness
-    print(f"\n[3] RQ2: Financial Flows vs. Capacity")
+    # 3. RQ2: Aid Effectiveness (Cross-Sectional Analysis)
+    print(f"\n[3] RQ2: Aid Effectiveness (ROI Analysis)")
     if 'Financial_Flows' in df.columns and 'Renewable_Capacity' in df.columns:
-        total_aid = df['Financial_Flows'].sum()
-        print(f"    - Total Financial Flows Recorded (2000-2020): ${total_aid/1e9:.2f} Billion")
+        # Group by Country to see if Total Aid -> Total Growth
+        country_stats = df.groupby('Country').agg({
+            'Financial_Flows': 'sum',
+            'Renewable_Capacity': lambda x: x.max() - x.min()  # Growth proxy
+        })
         
-        # Lagged Correlation check (Simplified)
-        aid_receivers = df[df['Financial_Flows'] > 0]
-        corr_aid_cap = aid_receivers['Financial_Flows'].corr(aid_receivers['Renewable_Capacity'])
-        print(f"    - Correlation (Aid Received vs. Renewable Capacity): {corr_aid_cap:.4f}")
-        print("      (Note: Low correlation implies aid may target access/grid rather than just generation capacity)")
+        # Filter for countries that actually received aid
+        receivers = country_stats[country_stats['Financial_Flows'] > 1e6] # >$1M aid
+        
+        if not receivers.empty:
+            corr_roi = receivers['Financial_Flows'].corr(receivers['Renewable_Capacity'])
+            print(f"    - Total Aid Analyzed: ${country_stats['Financial_Flows'].sum()/1e9:.2f} Billion")
+            print(f"    - ROI Correlation (Total Aid vs. Capacity Growth): {corr_roi:.4f}")
+            print("      -> Interpretation: This is the 'True' effectiveness metric.")
+        else:
+            print("    - Insufficient data for Aid ROI analysis.")
 
-    # 4. Outlier Detection / Top Performers
-    print(f"\n[4] Top Performers (2020)")
-    df_2020 = df[df['Year'] == 2020]
+    # 4. RQ3: The Equity Divide (Income Groups)
+    print(f"\n[4] RQ3: Energy Equity by Income")
+    if 'Income_Group' in df.columns and 'Renewable_Share' in df.columns:
+        equity = df.groupby('Income_Group', observed=True)[['Access_Electricity', 'Renewable_Share', 'CO2_Total_kt']].mean()
+        print(equity.to_string(float_format="{:.2f}".format))
+        print("\n    -> Use this table to discuss the 'Green Divide' in your Discussion section.")
+
+    # 5. Top Performers (Cleaned)
+    print(f"\n[5] Top Performers (2020 - Cleaned)")
+    df_2020 = df[df['Year'] == 2020].copy()
     
-    print("    - Top 3 Countries by Renewable Share:")
-    print(df_2020.nlargest(3, 'Renewable_Share')[['Country', 'Renewable_Share']].to_string(index=False))
-    
-    print("\n    - Top 3 Countries by Renewable Capacity Growth (Watts/capita):")
-    # Simple growth proxy: Capacity in 2020
-    print(df_2020.nlargest(3, 'Renewable_Capacity')[['Country', 'Renewable_Capacity']].to_string(index=False))
+    # Drop NaNs before ranking to avoid 'Afghanistan NaN' issue
+    top_share = df_2020.dropna(subset=['Renewable_Share']).nlargest(5, 'Renewable_Share')
+    print("    - Top 5 by Renewable Share (%):")
+    print(top_share[['Country', 'Renewable_Share']].to_string(index=False))
 
     print("\n" + "#"*60 + "\n")
