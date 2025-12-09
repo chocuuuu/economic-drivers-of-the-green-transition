@@ -30,6 +30,9 @@ def generate_visualizations(df):
     # Filter dataset
     df_clean = df[df['Year'] <= LAST_VALID_YEAR].copy()
     
+    # Generating EDA visualizations
+    _plot_eda_summary(df)
+
     # Generate Figures with Logs
     _plot_funding_transition(df_clean)
     _plot_kuznets_curve(df_clean)
@@ -42,6 +45,53 @@ def generate_visualizations(df):
     _plot_forecast_transition(df_clean)
     
     print("\n-> All figures saved to /figures directory.")
+
+# --- EDA VISUALIZATION FUNCTIONS ---
+
+def _plot_eda_summary(df):
+    """
+    Generates 3 preliminary visualizations required for EDA:
+    1. Histogram (Distribution)
+    2. Boxplot (Outliers)
+    3. Missing Data Summary
+    """
+    
+    # 1. Histogram: Energy Intensity Distribution
+    if 'Energy_Intensity' in df.columns:
+        plt.figure(figsize=(10, 6))
+        sns.histplot(df['Energy_Intensity'], kde=True, color='purple', bins=30)
+        plt.title('EDA: Distribution of Energy Intensity (Skew Check)', fontweight='bold')
+        plt.xlabel('Energy Intensity (MJ/$ GDP)')
+        plt.ylabel('Frequency')
+        plt.axvline(df['Energy_Intensity'].mean(), color='red', linestyle='--', label='Mean')
+        plt.legend()
+        plt.tight_layout()
+        plt.savefig('figures/fig_eda_1_intensity_histogram.png')
+        plt.close()
+
+    # 2. Boxplot: Renewable Capacity (Outlier Detection)
+    if 'Renewable_Capacity' in df.columns:
+        plt.figure(figsize=(10, 6))
+        # Log scale helps visualize the massive outliers better
+        sns.boxplot(x=df['Renewable_Capacity'], color='teal')
+        plt.title('EDA: Renewable Capacity Outliers (Boxplot)', fontweight='bold')
+        plt.xlabel('Renewable Capacity (W/capita)')
+        plt.xscale('log') # Log scale because variations are huge
+        plt.tight_layout()
+        plt.savefig('figures/fig_eda_2_capacity_boxplot.png')
+        plt.close()
+
+    # 3. Bar Chart: Missing Values Summary
+    plt.figure(figsize=(12, 6))
+    missing = df.isnull().sum()
+    missing = missing[missing > 0].sort_values(ascending=False)
+    if not missing.empty:
+        sns.barplot(x=missing.values, y=missing.index, palette='Reds_r')
+        plt.title('EDA: Missing Values Count by Indicator', fontweight='bold')
+        plt.xlabel('Number of Missing Records')
+        plt.tight_layout()
+        plt.savefig('figures/fig_eda_3_missing_values.png')
+        plt.close()
 
 # --- PLOTTING FUNCTIONS WITH DETAILED LOGS ---
 
