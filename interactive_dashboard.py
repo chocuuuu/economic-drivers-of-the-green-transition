@@ -53,9 +53,17 @@ def _create_funding_trend(df):
 
 def _create_decoupling_bubble(df):
     """Animated Bubble: GDP vs CO2."""
-    # Filter out 0s for log scale
-    df_clean = df[(df['GDP_Capita'] > 0) & (df['CO2_Total_kt'] > 0)].copy()
+    # Filter out 0s for log scale AND NaNs for size
+    df_clean = df[
+        (df['GDP_Capita'] > 0) & 
+        (df['CO2_Total_kt'] > 0) & 
+        (df['Access_Electricity'].notna())
+    ].copy()
     
+    if df_clean.empty:
+        print("Warning: No valid data for Bubble Chart after filtering.")
+        return go.Figure()
+
     fig = px.scatter(df_clean, x="GDP_Capita", y="CO2_Total_kt",
                      animation_frame="Year", animation_group="Country",
                      size="Access_Electricity", color="Country",

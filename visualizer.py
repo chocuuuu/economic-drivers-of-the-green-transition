@@ -101,7 +101,8 @@ def _plot_top_aid_recipients(df):
     total_aid = df.groupby('Country')['Financial_Flows'].sum().sort_values(ascending=False).head(10)
     
     plt.figure(figsize=(12, 6))
-    sns.barplot(x=total_aid.values, y=total_aid.index, palette='Blues_r')
+    # FIX: Assigned 'y' to 'hue' and set legend=False to fix deprecation warning
+    sns.barplot(x=total_aid.values, y=total_aid.index, hue=total_aid.index, palette='Blues_r', legend=False)
     plt.title('Top 10 Recipients of Green Energy Financial Aid (2000-2020)', fontweight='bold')
     plt.xlabel('Total USD Received')
     plt.tight_layout()
