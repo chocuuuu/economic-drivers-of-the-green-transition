@@ -1,5 +1,7 @@
 # filename: visualizer.py
 import matplotlib.pyplot as plt
+import geopandas as gpd
+import geodatasets
 import seaborn as sns
 import numpy as np
 import pandas as pd
@@ -43,6 +45,7 @@ def generate_visualizations(df):
     _plot_top_movers(df_clean)
     _plot_income_disparity(df_clean)
     _plot_forecast_transition(df_clean)
+    _plot_choropleth_map(df_clean)
     
     print("\n-> All figures saved to /figures directory.")
 
@@ -318,3 +321,46 @@ def _plot_forecast_transition(df):
     plt.ylabel('Renewable Energy Share (%)')
     plt.legend(title='Country Trends', bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.tight_layout(); plt.savefig('figures/fig9_predictive_forecast.png'); plt.close()
+
+def _plot_choropleth_map(df):
+    """
+    Generates a true choropleth map resembling the user's uploaded image.
+    Uses GeoPandas to merge data with world geometry.
+    """
+    # 1. Load the built-in world map from GeoPandas
+    # NEW LINE (Loads from a reliable URL)
+    world = gpd.read_file("https://raw.githubusercontent.com/python-visualization/folium/main/examples/data/world-countries.json")
+
+    # 2. Filter your data (using 2019 as per your snippet)
+    data_2019 = df[df['Year'] == 2019].copy()
+
+    # 3. Merge world geometry with your data
+    # Note: Ensure your dataframe has a column like 'Country' or 'ISO3' to match 'name' or 'iso_a3'
+    # We assume your df has a 'Country' column here.
+    world_data = world.merge(data_2019, how="left", left_on="name", right_on="Country")
+
+    # 4. Create the plot
+    fig, ax = plt.subplots(1, 1, figsize=(16, 10))
+    
+    # Plot the world map
+    # column='Renewable_Capacity' -> The variable to color by
+    # cmap='Blues' -> The color scheme (matches your blue image)
+    world_data.plot(
+        column='Renewable_Capacity', 
+        ax=ax, 
+        legend=True,
+        legend_kwds={'label': "Renewable Capacity by Country", 'orientation': "horizontal"},
+        cmap='Blues',      # This creates the blue gradient from your image
+        missing_kwds={'color': 'lightgrey'}, # Color for countries with no data
+        edgecolor='black', # clear country borders
+        linewidth=0.5
+    )
+
+    plt.title('Global Distribution: Renewable Capacity (2019)', fontweight='bold', fontsize=15)
+    
+    # Remove axis numbering for a cleaner map look
+    ax.set_axis_off()
+    
+    plt.tight_layout()
+    plt.savefig('figures/fig10_choropleth_map.png')
+    plt.close()
