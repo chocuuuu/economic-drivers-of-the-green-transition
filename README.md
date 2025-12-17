@@ -99,3 +99,11 @@ After running the pipeline, the `figures/` directory will contain the following 
 * **`interactive_dashboard.html`**: A standalone HTML file containing interactive Plotly versions of the figures above.
 
 </details>
+
+--- 
+
+## Contributors
+This project was authored by students from the College of Information and Computing Sciences at the University of Santo Tomas:
+- Jade Vincent Alfonso – jadevincent.alfonso.cics@ust.edu.ph
+- Ken Gerard Aguilar – kengerard.aguilar.cics@ust.edu.ph
+- Racell Gabriel Sincioco – racellgabriel.sincioco.cics@ust.edu.ph
