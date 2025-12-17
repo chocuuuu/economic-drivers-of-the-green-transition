@@ -1,7 +1,7 @@
 # Financing the Future: Economic Drivers of the Green Transition (2000–2019)
 
 ![Python](https://img.shields.io/badge/python-3.8%2B-blue)
-![Last Updated](https://img.shields.io/badge/last_updated-2025--12--17-orange)
+![Status](https://img.shields.io/badge/status-complete-green)
 
 ---
 
@@ -9,17 +9,17 @@
 This project analyzes the **Global Data on Sustainable Energy** to investigate the relationship between economic drivers—specifically **GDP growth** and **international financial aid**—and the transition to renewable energy.
 
 Addressing **SDG 7 (Affordable and Clean Energy)** and **SDG 13 (Climate Action)**, the analysis answers three critical questions:
-1.  **Decoupling:** Has economic growth separated from carbon emissions?
-2.  **Aid Effectiveness:** Does international climate finance actually drive renewable capacity?
-3.  **The Green Divide:** How does renewable adoption differ between rich and poor nations?
+1.  **The Hidden Gap:** How does infrastructure access (electricity) compare to health-critical access (clean cooking)?
+2.  **Aid Effectiveness:** Does international climate finance actually correlate with renewable capacity?
+3.  **The Efficiency Paradox:** Has economic growth decoupled from energy intensity?
 
 ---
 
 ## Methodology Highlights
-- **Relative Decoupling Analysis:** Comparing global GDP growth (+119.6%) vs. CO₂ emissions growth (+48.1%).
-- **Aid ROI metrics:** Correlating cumulative financial flows with physical capacity added (Watts/capita).
-- **Inequality Assessment:** Analyzing renewable energy shares across World Bank income quartiles.
-- **Predictive Forecasting:** Linear regression models projecting the trajectory of top performing nations to 2030.
+- **Decoupling Analysis:** Indexing Global GDP vs. Energy Intensity (2000–2019) to track efficiency gains.
+- **Aid ROI Metrics:** Correlating cumulative financial flows with physical capacity added (Watts/capita) and checking for "Ghost Aid."
+- **Stratified Analysis:** Breaking down renewable adoption by World Bank Income Quartiles (Low vs. High Income).
+- **Trajectory Mapping:** Identifying "Top Mover" nations that achieved the highest growth in renewable share over the last two decades.
 
 ---
 
@@ -44,7 +44,7 @@ Addressing **SDG 7 (Affordable and Clean Energy)** and **SDG 13 (Climate Action)
 You need **Python 3.8+** and the following libraries:
 
 ```bash
-pip install pandas numpy matplotlib seaborn plotly
+pip install pandas numpy matplotlib seaborn plotly geopandas
 ```
 </details>
 
