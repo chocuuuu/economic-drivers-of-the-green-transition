@@ -1,7 +1,7 @@
 # Financing the Future: Economic Drivers of the Green Transition (2000–2019)
 
 ![Python](https://img.shields.io/badge/python-3.8%2B-blue)
-![Last Updated](https://img.shields.io/badge/last_updated-2025--12--09-orange)
+![Last Updated](https://img.shields.io/badge/last_updated-2025--12--17-orange)
 
 ---
 
@@ -72,20 +72,30 @@ The script will execute in 4 Phases and log detailed statistics to the terminal 
 
 After running the script, the figures/ directory will contain:
 
-Static Figures (for PDF Report):
+## Generated Outputs
 
-1. **fig1_funding_transition.png**: Dual-axis chart comparing Financial Aid vs. Capacity.
-2. **fig2_kuznets_curve.png**: Scatter plot testing the Environmental Kuznets Curve.
-3. **fig3_energy_mix_evolution.png**: Stacked area chart of global generation (Fossil vs. Renewable).
-4. **fig4_top_aid_recipients.png**: Top 10 countries receiving climate finance.
-5. **fig5_global_divergence.png**: Indexed trends of GDP vs. CO2 (The Decoupling Check).
-6. **fig6_correlation_matrix.png**: Heatmap of key economic and energy drivers.
-7. **fig7_top_movers.png**: Top 10 nations by renewable share growth.
-8. **fig8_income_disparity.png**: Boxplot showing the "Green Divide" by income group.
-9. **fig9_predictive_forecast.png**: 2030 Trajectory forecast for top performers.
+After running the pipeline, the `figures/` directory will contain the following files:
 
-Interactive Dashboard:
+### **1. Exploratory Data Analysis (EDA)**
+* **`fig_eda_1_intensity_histogram.png`**: Distribution analysis of Energy Intensity (checking for skew).
+* **`fig_eda_2_multi_boxplot.png`**: Outlier detection across key indicators (Access, Capacity, Intensity).
+* **`fig_eda_3_missing_values.png`**: Summary of data gaps by column.
 
-- **interactive_dashboard.html**: A standalone HTML file containing interactive versions of all 9 figures above. Double-click to open in any browser.
+### **2. Main Report Figures**
+* **`fig1_equity_gap.png`**: The "Hidden Gap" – Access to Electricity vs. Clean Cooking.
+* **`fig2_aid_effectiveness.png`**: Scatter plot testing the correlation between Financial Aid and Renewable Capacity.
+* **`fig3_efficiency_decoupling.png`**: Trends showing the separation of Economic Growth (GDP) from Energy Intensity.
+* **`fig4_correlation_matrix.png`**: Heatmap of drivers (GDP, Aid, Renewable Share, etc.).
+* **`fig5a_global_divergence.png`**: Global trends comparing GDP growth vs. CO₂ emissions.
+* **`fig5b_strategic_leaders.png`**: Bar chart of the Top 20 nations by Renewable Capacity per capita.
+* **`fig6_energy_mix.png`**: Stacked area chart showing the global share of Fossil Fuels vs. Renewables.
+* **`fig7a_top_aid.png`**: Ranking of the top 10 recipients of international financial flows.
+* **`fig7b_top_movers.png`**: Analysis of countries with the fastest growth in renewable energy share.
+* **`fig8_income_disparity.png`**: Boxplot highlighting the "Green Divide" across income groups.
+* **`fig9_forecast.png`**: Historical trajectories and future projections for top-performing nations.
+* **`fig10_choropleth_map.png`**: Geospatial visualization of Global Renewable Capacity.
+
+### **3. Interactive Output**
+* **`interactive_dashboard.html`**: A standalone HTML file containing interactive Plotly versions of the figures above.
 
 </details>
