@@ -1,4 +1,4 @@
-# Financing the Future: Economic Drivers of the Green Transition (2000–2019)
+# Financing the Future: Economic Drivers of the Green Transition
 
 ![Python](https://img.shields.io/badge/python-3.8%2B-blue)
 ![Status](https://img.shields.io/badge/status-complete-green)
